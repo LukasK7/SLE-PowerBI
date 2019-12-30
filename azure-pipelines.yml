@@ -1,0 +1,129 @@
+name: $(Build.BuildId)
+
+trigger: none
+
+pool:
+  name: Business Central
+  demand:
+  - Agent.OS -equals WindowsNT
+  - docker
+
+variables:
+- group: BC Build variables
+- name: ImageName
+  value: mcr.microsoft.com/businesscentral/sandbox:update29-lt
+- name: DockerIsolation
+  value: process
+- name: MasterBranch
+  value: WIP
+- name: IsPullRequest
+  value: $[ ne(variables['System.PullRequest.PullRequestId'], '') ]
+
+steps:
+- checkout: self
+  clean: true 
+
+- task: DownloadSecureFile@1
+  name: DownloadBCLicense
+  inputs:
+    secureFile: $(BCLicense.SecureFileName)
+  displayName: Download BC license
+
+- task: DownloadSecureFile@1
+  name: DownloadBCAppSigningCertificate
+  inputs:
+    secureFile: $(BCAppSigningCertificate.SecureFileName)
+  displayName: Download certificate for BC app signing
+
+- powershell: |
+    $BestImageName = Get-BestBCContainerImageName -imageName $env:ImageName
+    docker pull $BestImageName
+  displayName: Pull new image
+
+- task: ALOpsDockerStart@1
+  inputs:
+    docker_image: $(ImageName)
+    docker_pull: true
+    docker_parameters: --isolation=$(DockerIsolation)
+  timeoutInMinutes: 2
+
+- task: ALOpsDockerWait@1
+  inputs:
+    search_string: 'Ready for connections!'
+    
+- task: ALOpsLicenseImport@1
+  inputs:
+    usedocker: true
+    license_path: '$(DownloadBCLicense.SecureFilePath)'
+    print_license_info: true
+    
+- task: ALOpsAppCompiler@1
+  displayName: 'Compile Extension'
+  inputs:
+    usedocker: true
+    targetproject: 'mainapp/app.json'
+    failed_on_warnings: true
+
+- task: ALOpsAppSign@1
+  displayName: 'ALOps App Sign'
+  env:
+    pfx_password: $(BCAppSigningCertificate.Password)
+  inputs:
+    usedocker: true
+    nav_artifact_app_filter: '*.app'
+    pfx_path: $(DownloadBCAppSigningCertificate.SecureFilePath)
+    timestamp_uri: 'http://timestamp.comodoca.com/authenticode' 
+
+- task: ALOpsAppPublish@1
+  displayName: 'Publish AL-App'
+  inputs:
+    usedocker: true
+    nav_artifact_app_filter: '*.app'   
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **/TestResults.xml'
+  inputs:
+    testResultsFormat: XUnit
+    testResultsFiles: '**/TestResults.xml'
+    testRunTitle: 'BC Test Results: $(Build.BuildId)'
+
+- task: ALOpsDockerRemove@1
+  displayName: 'Remove Docker Container'
+  enabled: true
+  condition: always()
+
+- powershell: |
+    Set-StrictMode -Version Latest
+    $AppVersion = (get-content -Path MainApp/app.json | convertfrom-json).version
+    $securepassword = convertto-securestring -string $env:BCInsider_Password -AsPlainText -force
+    $credential = [pscredential]::new($env:BCInsider_UserName, $securepassword)
+    $DockerVersion = (GET-NAVCONTAINERimagelabels $env:ImageName -registryCredential $credential).version
+    $BranchName = if($env:IsPullRequest -eq 'false') {$env:Build_SourceBranchName} else {$env:System_PullRequest_TargetBranch -replace 'refs/heads/', ''}
+    $TempPath = "\\filestorage\Projects\DevOps\dynamics-partners-lt\LBC-Softera\LBC-Intrastat\$BranchName\$DockerVersion\$AppVersion-Temporary-$env:Build_BuildID"
+    if ([System.IO.Directory]::Exists($TempPath)) {
+        throw "TempPath ($TempPath) already exist"
+    }
+
+    New-Item -itemtype directory -path $TempPath -force
+    copy-item -path * -destination $TempPath -recurse
+
+    $OldPath = "\\filestorage\Projects\DevOps\dynamics-partners-lt\LBC-Softera\LBC-Intrastat\$BranchName\$DockerVersion\$AppVersion-Old"
+    if([System.IO.Directory]::Exists($OldPath)) {
+        remove-item $OldPath -recurse -force
+    }
+    
+    $Path = "\\filestorage\Projects\DevOps\dynamics-partners-lt\LBC-Softera\LBC-Intrastat\$BranchName\$DockerVersion\$AppVersion"
+    if ([System.IO.Directory]::Exists($path)) {
+        new-item -itemtype directory -path $OldPath -force
+        copy-item -path $Path\* -destination $OldPath -recurse
+        remove-item $Path -Recurse -Force
+    }
+    if (-Not ([System.IO.Directory]::Exists($path))) {
+        copy-item -path $TempPath -destination $Path -recurse
+        remove-item  -path $TempPath -recurse -force
+    }
+  condition: and(succeeded(), not(startsWith(variables['Build.SourceBranchName'], variables['MasterBranch'])))
+  env:
+    BCInsider_UserName: $(BCInsider.UserName)
+    BCInsider_Password: $(BCInsider.Password)
+  displayName: Copy files to \\filestorage 

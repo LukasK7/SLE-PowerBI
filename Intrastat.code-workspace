@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "MainApp"
+		},
+		{
+			"path": "TestApp"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/*.code-workspace": true,
+			"MainApp/": true,
+			"TestApp/": true
+		},
+		"al.enableCodeAnalysis": true,
+		"al.codeAnalyzers": [
+			"${AppSourceCop}",
+			"${UICop}",
+			"${CodeCop}"
+		],
+		"CRS.OnSaveAlFileAction": "Reorganize",
+		"CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+		"CRS.FileNamePatternExtensions": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+		"CRS.FileNamePatternPageCustomizations": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+		"CRS.RenameWithGit": true
+	}
+}

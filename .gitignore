@@ -1,0 +1,6 @@
+**/.vscode/launch.json
+**/.vscode/rad.json
+**/.vscode/settings.json
+*.g.xlf
+*.app
+permissionsAnalyzer.json
