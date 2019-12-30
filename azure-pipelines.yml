@@ -9,7 +9,8 @@ pool:
   - docker
 
 variables:
-- group: BC Build variables
+- group: BC Common Variables
+- group: BC14
 - name: ImageName
   value: mcr.microsoft.com/businesscentral/sandbox:update29-lt
 - name: DockerIsolation
@@ -18,6 +19,12 @@ variables:
   value: WIP
 - name: IsPullRequest
   value: $[ ne(variables['System.PullRequest.PullRequestId'], '') ]
+- name: MainAppFolder
+  value: MainApp
+- name: TestAppFolder
+  value: TestApp
+- name: OrganizationName
+  value: softera-baltic
 
 steps:
 - checkout: self
@@ -32,7 +39,7 @@ steps:
 - task: DownloadSecureFile@1
   name: DownloadBCAppSigningCertificate
   inputs:
-    secureFile: $(BCAppSigningCertificate.SecureFileName)
+    secureFile: $(BCAppSigningCertificateSecureFileName)
   displayName: Download certificate for BC app signing
 
 - powershell: |
@@ -61,13 +68,13 @@ steps:
   displayName: 'Compile Extension'
   inputs:
     usedocker: true
-    targetproject: 'mainapp/app.json'
+    targetproject: '$(MainAppFolder)/app.json'
     failed_on_warnings: true
 
 - task: ALOpsAppSign@1
   displayName: 'ALOps App Sign'
   env:
-    pfx_password: $(BCAppSigningCertificate.Password)
+    pfx_password: $(BCAppSigningCertificatePassword)
   inputs:
     usedocker: true
     nav_artifact_app_filter: '*.app'
@@ -94,12 +101,13 @@ steps:
 
 - powershell: |
     Set-StrictMode -Version Latest
-    $AppVersion = (get-content -Path MainApp/app.json | convertfrom-json).version
+    $AppVersion = (get-content -Path $(MainAppFolder)/app.json | convertfrom-json).version
     $securepassword = convertto-securestring -string $env:BCInsider_Password -AsPlainText -force
     $credential = [pscredential]::new($env:BCInsider_UserName, $securepassword)
     $DockerVersion = (GET-NAVCONTAINERimagelabels $env:ImageName -registryCredential $credential).version
     $BranchName = if($env:IsPullRequest -eq 'false') {$env:Build_SourceBranchName} else {$env:System_PullRequest_TargetBranch -replace 'refs/heads/', ''}
-    $TempPath = "\\filestorage\Projects\DevOps\dynamics-partners-lt\LBC-Softera\LBC-Intrastat\$BranchName\$DockerVersion\$AppVersion-Temporary-$env:Build_BuildID"
+    $CommonPath = "\\filestorage\Projects\DevOps\$(OrganizationName)\$env:System_TeamProject\$env:Build_Repository_Name\$BranchName\$DockerVersion\$AppVersion"
+    $TempPath = "$CommonPath-Temporary-$env:Build_BuildID"
     if ([System.IO.Directory]::Exists($TempPath)) {
         throw "TempPath ($TempPath) already exist"
     }
@@ -107,12 +115,12 @@ steps:
     New-Item -itemtype directory -path $TempPath -force
     copy-item -path * -destination $TempPath -recurse
 
-    $OldPath = "\\filestorage\Projects\DevOps\dynamics-partners-lt\LBC-Softera\LBC-Intrastat\$BranchName\$DockerVersion\$AppVersion-Old"
+    $OldPath =  "$CommonPath-Old"
     if([System.IO.Directory]::Exists($OldPath)) {
         remove-item $OldPath -recurse -force
     }
     
-    $Path = "\\filestorage\Projects\DevOps\dynamics-partners-lt\LBC-Softera\LBC-Intrastat\$BranchName\$DockerVersion\$AppVersion"
+    $Path = $CommonPath
     if ([System.IO.Directory]::Exists($path)) {
         new-item -itemtype directory -path $OldPath -force
         copy-item -path $Path\* -destination $OldPath -recurse
@@ -124,6 +132,6 @@ steps:
     }
   condition: and(succeeded(), not(startsWith(variables['Build.SourceBranchName'], variables['MasterBranch'])))
   env:
-    BCInsider_UserName: $(BCInsider.UserName)
-    BCInsider_Password: $(BCInsider.Password)
-  displayName: Copy files to \\filestorage 
+    BCInsider_UserName: $(BCInsiderUserName)
+    BCInsider_Password: $(BCInsiderPassword)
+  displayName: Copy files to \\filestorage
