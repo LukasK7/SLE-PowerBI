@@ -17,9 +17,9 @@ variables:
   SOURCE_BRANCH: WIP
 strategy:
   matrix:
-    SANDBOX_OLD:
+    SANDBOX_BC14:
       TARGET_BRANCH: Release-BC14
-    SANDBOX_CURRENT:
+    SANDBOX_BC15:
       TARGET_BRANCH: Release-BC15
     SANDBOX_MAJOR:
       TARGET_BRANCH: Release-UpcomingMajor
