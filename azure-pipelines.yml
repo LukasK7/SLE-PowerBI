@@ -106,7 +106,7 @@ steps:
     $credential = [pscredential]::new($env:BCInsider_UserName, $securepassword)
     $DockerVersion = (GET-NAVCONTAINERimagelabels $env:ImageName -registryCredential $credential).version
     $BranchName = if($env:IsPullRequest -eq 'false') {$env:Build_SourceBranchName} else {$env:System_PullRequest_TargetBranch -replace 'refs/heads/', ''}
-    $CommonPath = "\\filestorage\Projects\DevOps\$(OrganizationName)\$env:System_TeamProject\$env:Build_Repository_Name\$BranchName\$DockerVersion\$AppVersion"
+    $CommonPath = "\\filestorage\Projects\DevOps\$(OrganizationName)\$env:System_TeamProject\$env:Build_Repository_Name\$BranchName-$DockerVersion\$AppVersion"
     $TempPath = "$CommonPath-Temporary-$env:Build_BuildID"
     if ([System.IO.Directory]::Exists($TempPath)) {
         throw "TempPath ($TempPath) already exist"
