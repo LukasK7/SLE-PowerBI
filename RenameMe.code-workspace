@@ -22,6 +22,7 @@
 			"${UICop}",
 			"${CodeCop}"
 		],
+    	"al.ruleSetPath": "./al.ruleset.json",
 		"CRS.OnSaveAlFileAction": "Reorganize",
 		"CRS.ObjectNamePrefix": "<Prefix> ",
 		"CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
