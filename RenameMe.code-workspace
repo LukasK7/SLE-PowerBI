@@ -16,13 +16,17 @@
 			"MainApp/": true,
 			"TestApp/": true
 		},
+		"[al]": {
+			"files.trimTrailingWhitespace": true,
+			"files.trimFinalNewlines": true,
+		},
 		"al.enableCodeAnalysis": true,
 		"al.codeAnalyzers": [
 			"${AppSourceCop}",
 			"${UICop}",
 			"${CodeCop}"
 		],
-    	"al.ruleSetPath": "./al.ruleset.json",
+		"al.ruleSetPath": "./al.ruleset.json",
 		"CRS.OnSaveAlFileAction": "Reorganize",
 		"CRS.ObjectNamePrefix": "<Prefix> ",
 		"CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
