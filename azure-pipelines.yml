@@ -25,6 +25,8 @@ variables:
   value: TestApp
 - name: OrganizationName
   value: softera-baltic
+- name: AppVersion
+  value: ''
 
 steps:
 - checkout: self
@@ -64,6 +66,9 @@ steps:
     license_path: '$(DownloadBCLicense.SecureFilePath)'
     print_license_info: true
     
+- powershell: Write-Host "##vso[task.setvariable variable=AppVersion;]$((Get-Content -Path $env:MainAppFolder/app.json | ConvertFrom-Json).version)"
+  displayName: Get App Version
+
 - task: ALOpsAppCompiler@1
   displayName: 'Compile Extension'
   inputs:
@@ -101,12 +106,11 @@ steps:
 
 - powershell: |
     Set-StrictMode -Version Latest
-    $AppVersion = (get-content -Path $(MainAppFolder)/app.json | convertfrom-json).version
     $securepassword = convertto-securestring -string $env:BCInsider_Password -AsPlainText -force
     $credential = [pscredential]::new($env:BCInsider_UserName, $securepassword)
     $DockerVersion = (GET-NAVCONTAINERimagelabels $env:ImageName -registryCredential $credential).version
     $BranchName = if($env:IsPullRequest -eq 'false') {$env:Build_SourceBranchName} else {$env:System_PullRequest_TargetBranch -replace 'refs/heads/', ''}
-    $CommonPath = "\\filestorage\Projects\DevOps\$(OrganizationName)\$env:System_TeamProject\$env:Build_Repository_Name\$BranchName-$DockerVersion\$AppVersion"
+    $CommonPath = "\\filestorage\Projects\DevOps\$(OrganizationName)\$env:System_TeamProject\$env:Build_Repository_Name\$BranchName-$DockerVersion\$env:AppVersion"
     $TempPath = "$CommonPath-Temporary-$env:Build_BuildID"
     if ([System.IO.Directory]::Exists($TempPath)) {
         throw "TempPath ($TempPath) already exist"
