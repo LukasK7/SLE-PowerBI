@@ -75,6 +75,7 @@ steps:
     usedocker: true
     targetproject: '$(MainAppFolder)/app.json'
     failed_on_warnings: true
+    nav_app_version: $(AppVersion)
 
 - task: ALOpsAppSign@1
   displayName: 'ALOps App Sign'
