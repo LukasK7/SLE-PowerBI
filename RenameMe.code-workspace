@@ -25,6 +25,7 @@
     	"al.ruleSetPath": "./al.ruleset.json",
 		"CRS.OnSaveAlFileAction": "Reorganize",
 		"CRS.ObjectNamePrefix": "<Prefix> ",
+		"CRS.RemovePrefixFromFilename": true,
 		"CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
 		"CRS.FileNamePatternExtensions": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
 		"CRS.FileNamePatternPageCustomizations": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
