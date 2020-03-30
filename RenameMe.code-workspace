@@ -22,9 +22,10 @@
 		},
 		"al.enableCodeAnalysis": true,
 		"al.codeAnalyzers": [
-			"${AppSourceCop}",
+			"${CodeCop}",
 			"${UICop}",
-			"${CodeCop}"
+			"${PerTenantExtensionCop}",
+			"${AppSourceCop}"
 		],
 		"al.ruleSetPath": "./al.ruleset.json",
 		"CRS.OnSaveAlFileAction": "Reorganize",
