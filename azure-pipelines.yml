@@ -14,7 +14,7 @@ variables:
 - name: ImageName
   value: mcr.microsoft.com/businesscentral/sandbox:update29-lt
 - name: DockerIsolation
-  value: process
+  value: hyperv
 - name: MasterBranch
   value: WIP
 - name: IsPullRequest
@@ -52,8 +52,11 @@ steps:
 - task: ALOpsDockerStart@1
   inputs:
     docker_image: $(ImageName)
-    docker_pull: true
-    docker_parameters: --isolation=$(DockerIsolation)
+    memory_gb: 4
+    docker_parameters: |
+      --isolation=$(DockerIsolation)
+      --env ExitOnError=N
+      --memory 4g
   timeoutInMinutes: 2
 
 - task: ALOpsDockerWait@1
