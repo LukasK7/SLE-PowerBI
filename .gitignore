@@ -1,6 +1,7 @@
 **/.vscode/launch.json
 **/.vscode/rad.json
 **/.vscode/settings.json
+**/.vscode/.alcache/
 *.g.xlf
 *.app
 permissionsAnalyzer.json
