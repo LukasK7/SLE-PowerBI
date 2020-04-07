@@ -1,7 +1,7 @@
 {
     "name": "Custom AL rules",
     "rules": [
-{
+        {
             "id": "AW0006",
             "action": "Error",
             "justification": "UsageCategory must be specified"
