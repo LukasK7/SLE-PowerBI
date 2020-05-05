@@ -13,6 +13,8 @@ variables:
 - group: BC14
 - name: ImageName
   value: mcr.microsoft.com/businesscentral/sandbox:update29-lt
+- name: AcceptOutdatedImages
+  value: true
 - name: DockerIsolation
   value: hyperv
 - name: MasterBranch
@@ -52,6 +54,7 @@ steps:
 - task: ALOpsDockerStart@1
   inputs:
     docker_image: $(ImageName)
+    accept_image_outdated: $(AcceptOutdatedImages)
     memory_gb: 4
     docker_parameters: |
       --isolation=$(DockerIsolation)
