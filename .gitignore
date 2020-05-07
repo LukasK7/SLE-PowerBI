@@ -2,6 +2,7 @@
 **/.vscode/rad.json
 **/.vscode/settings.json
 **/.vscode/.alcache/
+**/.vscode/.altemplates/
 *.g.xlf
 *.app
 permissionsAnalyzer.json
