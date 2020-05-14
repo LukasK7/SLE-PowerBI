@@ -29,10 +29,37 @@ variables:
   value: softera-baltic
 - name: AppVersion
   value: ''
+- name: CountersContainerName
+  value: counters
 
 steps:
 - checkout: self
   clean: true 
+
+- powershell: |
+    $ContainerID = docker inspect $env:ContainerName --format '{{.ID}}'
+
+    Invoke-Command -ContainerId $ContainerID -ScriptBlock {
+        param
+        (
+            $Organization,
+            $Project,
+            $Repo,
+            $Branch,
+            $Task
+        )
+
+        $SQLCommand = 'SET NOCOUNT ON; update counters set [AlOpsPipelineCount] = [AlOpsPipelineCount] + 1'
+        sqlcmd.exe -S .\sqlexpress -U demo -P Password123. -Q $SQLCommand -d Counters
+
+        $SQLCommand2 = 'SET NOCOUNT ON; INSERT [log] VALUES (N''$(v1)'', N''$(v2)'', N''$(v3)'', N''$(v4)'', getdate(), N''$(v5)'')'
+        sqlcmd.exe -S .\sqlexpress -U demo -P Password123. -Q $SQLCommand2 -d Counters -v "v1=""$Organization""" "v2=""$Project""" "v3=""$Repo""" "v4=""$Branch""" "v5=""$Task"""
+    } -ArgumentList $env:OrganizationName, $env:System_TeamProject, $env:Build_Repository_Name, $env:Build_SourceBranchName, $env:TaskName
+  condition: always()
+  env:
+    TaskName: Compile AlOps
+    ContainerName: $(CountersContainerName)
+  displayName: Update Counters 
 
 - task: DownloadSecureFile@1
   name: DownloadBCLicense
