@@ -48,7 +48,7 @@ if (-not (Test-Path -LiteralPath 'env:EXTENSIONTEMPLATE_UPDATECHECKED') -or $env
     Remove-Item -LiteralPath $env:EXTENSIONTEMPLATE_TEMP -Recurse -Force -ErrorAction SilentlyContinue
     New-Item -ItemType Directory -Path $env:EXTENSIONTEMPLATE_TEMP -Force | Out-Null
     try {
-        git clone https://dev.azure.com/softera-baltic/LBC-SofteraExtended/_git/ExtensionTemplate $env:EXTENSIONTEMPLATE_TEMP
+        git clone --single-branch --branch WIP https://dev.azure.com/softera-baltic/LBC-SofteraExtended/_git/ExtensionTemplate $env:EXTENSIONTEMPLATE_TEMP
     
         $env:EXTENSIONTEMPLATE_UPDATECHECKED = 'Y'
         . "$env:EXTENSIONTEMPLATE_TEMP\ExtensionTemplate.ps1"
