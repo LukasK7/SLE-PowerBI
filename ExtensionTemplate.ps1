@@ -145,7 +145,7 @@ $AppSourceCopTemplate = @'
 }
 '@
 
-if (Test-Path -Path .\*.code-workspace) {
+if (Get-Item -Path .\*.code-workspace -Exclude RenameMe.code-workspace) {
     Write-Host
     Write-Host -Object 'Project is already configured.' -ForegroundColor Red
     pause
