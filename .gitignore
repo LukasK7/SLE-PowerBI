@@ -3,6 +3,7 @@
 **/.vscode/settings.json
 **/.vscode/.alcache/
 **/.vscode/.altemplates/
+**/.altestrunner/
 *.g.xlf
 *.app
 permissionsAnalyzer.json
