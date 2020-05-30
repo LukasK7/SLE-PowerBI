@@ -15,6 +15,11 @@
             "id": "PTE0002",
             "action": "Hidden",
             "justification": "Extension fields are outside 5XXXX range"
+        },
+        {
+            "id": "AA0214",
+            "action": "Info",
+            "justification": "TODO: Wait fix for bug in analyser https://github.com/microsoft/AL/issues/5665"
         }
     ]
 }
