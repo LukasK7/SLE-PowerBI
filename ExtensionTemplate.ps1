@@ -140,7 +140,6 @@ $ManifestTemplate = @'
 $AppSourceCopTemplate = @'
 {
     "mandatoryAffixes": [">>>EXTENSIONTEMPLATE_PREFIX<<<"],
-    "version": "1.0.0.0",
     "supportedCountries": ["US"]
 }
 '@
