@@ -30,3 +30,5 @@ variables:
 
 extends:
   template: Templates/Pipeline.yml@softeraDevTasks
+  parameters:
+    appVersionSelection: dockerImageMajorMinorAndManifestBuildRevision
