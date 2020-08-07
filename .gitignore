@@ -1,12 +1,6 @@
 .*
-**/.vscode/launch.json
-**/.vscode/rad.json
-**/.vscode/settings.json
-**/.vscode/.alcache/
-**/.vscode/.altemplates/
-**/.altestrunner/
-*.g.xlf
-*.app
+.app
 permissionsAnalyzer.json
-
-!/.gitignore
+*.g.xlf
+!.gitingore
+!tasks.json
