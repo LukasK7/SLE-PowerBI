@@ -4,3 +4,4 @@ permissionsAnalyzer.json
 *.g.xlf
 !.gitingore
 !tasks.json
+!.netpackages
