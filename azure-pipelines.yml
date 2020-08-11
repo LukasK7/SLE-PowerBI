@@ -24,7 +24,7 @@ variables:
   value: TestApp
 - group: BC16
 - name: ImageName
-  value: mcr.microsoft.com/businesscentral/onprem:2004-rtm
+  value: mcr.microsoft.com/businesscentral/onprem:2004
 - name: OrganizationName
   value: softera-baltic
 
