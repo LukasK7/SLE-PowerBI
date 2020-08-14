@@ -1,7 +1,24 @@
+# Exclude dot-files and dot-directories
 .*
-*.app
-permissionsAnalyzer.json
-*.g.xlf
+
+# Reapply rules to files in .vscode folders
+!.vscode/
+**/.vscode/*
+
+# Keep gitignore
 !.gitingore
+
+# Keep VS Code tasks
 !tasks.json
+
+# Keep .NET packages
 !.netpackages
+
+# Exclude AL packages
+*.app
+
+# Exclude permission analyzer state
+permissionsAnalyzer.json
+
+# Exclude global translation
+*.g.xlf
