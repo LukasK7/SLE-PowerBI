@@ -18,17 +18,12 @@ resources:
 
 variables:
 - group: BC Common Variables
-- name: MainAppFolder
-  value: MainApp
-- name: TestAppFolder
-  value: TestApp
 - group: BC16
 - name: ImageName
   value: mcr.microsoft.com/businesscentral/onprem:2004
-- name: OrganizationName
-  value: softera-baltic
 
 extends:
   template: Templates/Pipeline.yml@softeraDevTasks
   parameters:
     appVersionSelection: dockerImageMajorMinorAndManifestBuildRevision
+    organizationName: softera-baltic
