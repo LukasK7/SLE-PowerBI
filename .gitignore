@@ -6,7 +6,7 @@
 **/.vscode/*
 
 # Keep gitignore
-!.gitingore
+!.gitignore
 
 # Keep VS Code tasks
 !tasks.json
