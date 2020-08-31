@@ -1,6 +1,9 @@
 name: $(Build.BuildId)
 
-trigger: none
+trigger: 
+  branches:
+    include:
+    - Release-*
 
 pool:
   name: Business Central
