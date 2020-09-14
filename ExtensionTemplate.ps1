@@ -78,9 +78,9 @@ $WorkspaceTemplate = @'
 	],
 	"settings": {
 		"files.exclude": {
-			"**/*.code-workspace": true,
-			"MainApp/": true,
-			"TestApp/": true
+			"**/*.code-workspace": false,
+			"MainApp/": false,
+			"TestApp/": false
 		},
 		"[al]": {
 			"files.trimTrailingWhitespace": true,
