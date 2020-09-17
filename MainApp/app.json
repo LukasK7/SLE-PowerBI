@@ -1,0 +1,30 @@
+﻿{
+  "id": "f1cb4d39-2b5d-4fa2-acdf-3b99c51bc8b9",
+  "name": "SLE-PowerBI",
+  "publisher": "Softera Baltic",
+  "version": "1.0.0.0",
+  "brief": "SLE-PowerBI",
+  "description": "SLE-PowerBI",
+  "privacyStatement": "https://www.softera.lt",
+  "EULA": "https://www.softera.lt",
+  "help": "https://www.softera.lt",
+  "url": "https://www.softera.lt",
+  "contextSensitiveHelpUrl": "https://www.softera.lt",
+  "logo": "logo-lt.png",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "16.0.0.0",
+  "application": "16.0.0.0",
+  "idRanges": [
+    {
+      "from": 70429750,
+      "to": 70429789 
+    }
+  ],
+  "showMyCode": true,
+  "runtime": "5.0",
+  "features": [
+    "TranslationFile"
+  ],
+  "supportedLocales": ["en-US", "lt-LT"]
+}

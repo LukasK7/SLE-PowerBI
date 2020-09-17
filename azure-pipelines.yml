@@ -1,0 +1,32 @@
+name: $(Build.BuildId)
+
+trigger: 
+  branches:
+    include:
+    - Release-*
+
+pool:
+  name: Business Central
+  demand:
+  - Agent.OS -equals WindowsNT
+  - docker
+
+resources:
+  repositories:
+  - repository: softeraDevTasks
+    type: github
+    name: softera-dev/AzurePipelinesTemplatesForBusinessCentral
+    ref: 'refs/heads/master'
+    endpoint: github_softera_dev
+
+variables:
+- group: BC Common Variables
+- group: BC16
+- name: ImageName
+  value: mcr.microsoft.com/businesscentral/onprem:2004
+
+extends:
+  template: Templates/Pipeline.yml@softeraDevTasks
+  parameters:
+    appVersionSelection: dockerImageMajorMinorAndManifestBuildRevision
+    organizationName: softera-baltic

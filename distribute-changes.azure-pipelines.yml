@@ -1,0 +1,38 @@
+name: Distribute changes
+
+trigger:
+  branches:
+    include:
+    - WIP
+
+resources:
+  repositories:
+  - repository: softeraDevTasks
+    type: github
+    name: softera-dev/AzurePipelinesTemplatesForBusinessCentral
+    ref: 'refs/heads/master'
+    endpoint: github_softera_dev
+
+variables:
+  SOURCE_BRANCH: WIP
+strategy:
+  matrix:
+    SANDBOX_BC14:
+      TARGET_BRANCH: Release-BC14
+    SANDBOX_BC15:
+      TARGET_BRANCH: Release-BC15
+    SANDBOX_BC16:
+      TARGET_BRANCH: Release-BC16
+    SANDBOX_MAJOR:
+      TARGET_BRANCH: Release-UpcomingMajor
+    SANDBOX_MINOR:
+      TARGET_BRANCH: Release-UpcomingMinor
+
+steps:
+- template: Templates/CreatePullRequest.yml@softeraDevTasks
+  parameters:
+    sourceRefName: refs/heads/$(SOURCE_BRANCH)
+    targetRefName: refs/heads/$(TARGET_BRANCH)
+    title: Moving changes from $(SOURCE_BRANCH) to $(TARGET_BRANCH)
+    autoComplete: true
+    mergeCommitMessage: Merge $(SOURCE_BRANCH) to $(TARGET_BRANCH)
